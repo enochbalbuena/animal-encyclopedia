@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Favorites</title>
+  <link rel="stylesheet" href="./src/css/style.css" />
+</head>
+<body>
+  <nav></nav>
+
+  <header>
+    <h1>Favorite Animals</h1>
+  </header>
+
+  <main>
+    <div id="favoritesPageContainer" class="card-grid"></div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Animal Encyclopedia</p>
+  </footer>
+
+  <script type="module">
+    import { renderNavbar } from './src/js/navbar.js';
+    import { setupDarkModeToggle } from './src/js/darkmode.js';
+    import { loadFavorites, renderFavorites } from './src/js/storage.js';
+
+    renderNavbar();
+    setupDarkModeToggle();
+    loadFavorites();
+    const container = document.getElementById('favoritesPageContainer');
+    renderFavorites(container);
+  </script>
+</body>
+</html>

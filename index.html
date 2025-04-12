@@ -8,10 +8,14 @@
   <link rel="stylesheet" href="./src/css/style.css" />
 </head>
 <body>
+  <nav></nav>
   <header>
     <h1>Animal Encyclopedia</h1>
-    <input id="searchInput" type="text" placeholder="Search for any animal...">
-    <button id="randomBtn">Discover Random Animal</button>
+    <div class="search-bar">
+      <input id="searchInput" type="text" placeholder="Search for any animal...">
+      <button id="searchBtn">Search</button>
+      <button id="randomBtn">Discover Random Animal</button>
+    </div>    
   </header>
 
   <main>
@@ -32,9 +36,16 @@
   </main>
 
   <footer>
+    <p id="lastVisit"></p>
     <p>&copy; 2025 Animal Encyclopedia. All rights reserved.</p>
   </footer>
 
   <script type="module" src="./src/js/main.js"></script>
+  <script type="module">
+    import { renderNavbar } from './src/js/navbar.js';
+    import { setupDarkModeToggle } from './src/js/darkmode.js';
+    renderNavbar();
+    setupDarkModeToggle();
+  </script>
 </body>
 </html>

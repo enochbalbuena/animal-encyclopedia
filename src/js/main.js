@@ -1,4 +1,6 @@
 import { getAnimalByName, getAnimalImage } from './api.js';
+import { createAnimalModal } from './modal.js';
+import { loadFavorites, renderFavorites, loadRecentlyViewed, renderRecentlyViewed } from './storage.js';
 
 let animalList = [];
 
@@ -47,17 +49,17 @@ async function getRandomFeaturedAnimals(count = 3) {
 
 // Create an animal card element
 function createAnimalCard(name, desc, imgUrl) {
-    const div = document.createElement('div');
-    div.classList.add('card');
-    div.innerHTML = `
-      <div class="card-image">
-        <img src="${imgUrl}" alt="${name}" />
-      </div>
-      <h3>${name}</h3>
-      <p>${desc}</p>
-    `;
-    return div;
-  }  
+  const div = document.createElement('div');
+  div.classList.add('card');
+  div.innerHTML = `
+    <div class="card-image">
+      <img src="${imgUrl}" alt="${name}" />
+    </div>
+    <h3>${name}</h3>
+    <p>${desc}</p>
+  `;
+  return div;
+}
 
 // Load and display featured animals
 async function loadFeaturedAnimals() {
@@ -77,9 +79,27 @@ async function loadFeaturedAnimals() {
       const image = await getAnimalImage(animal.name);
       const slogan = animal.characteristics?.slogan || 'Amazing creature!';
       const card = createAnimalCard(animal.name, slogan, image);
+
+      // Open modal on click
+      card.addEventListener('click', () => createAnimalModal(animal, image));
+
       container.appendChild(card);
     } catch (error) {
       console.error(`Failed to load image for ${animal.name}:`, error);
+    }
+  }
+}
+
+// Search functionality
+async function handleSearch() {
+  const searchValue = document.getElementById('searchInput').value.trim();
+  if (searchValue) {
+    const [animal] = await getAnimalByName(searchValue);
+    if (animal) {
+      const image = await getAnimalImage(animal.name);
+      createAnimalModal(animal, image);
+    } else {
+      alert('Animal not found');
     }
   }
 }
@@ -89,14 +109,41 @@ document.getElementById('randomBtn').addEventListener('click', async () => {
   const name = getRandomNames(1)[0];
   const [animal] = await getAnimalByName(name);
   if (animal) {
-    alert(`🎲 Random Animal: ${animal.name}\n\n${animal.characteristics?.slogan || 'Interesting animal!'}`);
+    const image = await getAnimalImage(animal.name);
+    createAnimalModal(animal, image);
   } else {
     alert('Could not fetch animal info. Try again!');
   }
 });
 
+// Search button and enter key
+document.getElementById('searchInput').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') handleSearch();
+});
+
 // Initial load
 (async function () {
+  // Last Visit
+  const lastVisit = localStorage.getItem('lastVisit');
+  const now = new Date();
+  if (lastVisit) {
+    const formatted = new Date(lastVisit).toLocaleString();
+    const visitDisplay = document.getElementById('lastVisit');
+    if (visitDisplay) {
+      visitDisplay.textContent = `Your last visit was: ${formatted}`;
+    }
+  }
+  localStorage.setItem('lastVisit', now.toISOString());
+
+  // Restore Theme
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') document.body.classList.add('dark-mode');
+
+  // App Initialization
   await loadAnimalList();
   await loadFeaturedAnimals();
+  loadFavorites();
+  renderFavorites(document.getElementById('favoritesContainer'));
+  loadRecentlyViewed();
+  renderRecentlyViewed(document.getElementById('recentContainer'));
 })();
