@@ -1,3 +1,4 @@
+import '../css/style.css';
 import { getAnimalByName, getAnimalImage } from './api.js';
 import { createAnimalModal } from './modal.js';
 

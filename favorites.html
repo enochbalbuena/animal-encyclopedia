@@ -20,16 +20,6 @@
     <p>&copy; 2025 Animal Encyclopedia</p>
   </footer>
 
-  <script type="module">
-    import { renderNavbar } from '/src/js/navbar.js';
-    import { setupDarkModeToggle } from '/src/js/darkmode.js';
-    import { loadFavorites, renderFavorites } from '/src/js/storage.js';
-
-    renderNavbar();
-    setupDarkModeToggle();
-    loadFavorites();
-    const container = document.getElementById('favoritesPageContainer');
-    renderFavorites(container);
-  </script>
+  <script type="module" src="/src/js/favorites.js"></script>
 </body>
 </html>
